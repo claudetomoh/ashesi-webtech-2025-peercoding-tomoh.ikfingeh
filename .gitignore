@@ -1,0 +1,19 @@
+# OS / Editor junk
+Thumbs.db
+desktop.ini
+.DS_Store
+
+# VS Code
+.vscode/
+
+# IDEs
+.idea/
+
+# Logs
+*.log
+
+# Node (not used now, but harmless)
+node_modules/
+
+# Env files
+.env
