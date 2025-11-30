@@ -1,140 +1,131 @@
-# SmartRegister - Faculty Intern Dashboard
+# SmartTutor Connect
 
-A modern, responsive web dashboard for managing course attendance and allowing faculty interns to oversee their assigned courses. This dashboard provides an intuitive interface for both managing attendance and joining courses as observers.
+Modern tutoring platform prototype that combines a hand-crafted marketing site, a Vite-powered React SPA, and a hardened PHP/MySQL API with live security instrumentation, messaging, and admin tooling.
 
-## 🎯 Project Overview
+## Why This Repo Matters
+- Landing experience with modular HTML templates, accessible components, and brand-ready styling.
+- React single-page app prototype for booking flows, dashboards, and tutor discovery.
+- PHP 8.1 API surface that persists bookings, enforces password policy, tracks auth attempts, and emits JWT + refresh pairs.
+- Security-first utilities (2FA, risk scoring, audits, WebSocket bridge) plus an admin console to triage incidents, bookings, and notifications.
 
-SmartRegister is designed specifically for faculty interns who need to:
-- View their assigned courses at a glance
-- Manage attendance for multiple sessions
-- Allow staff and students to join as observers/auditors
-- Access course information in a user-friendly format
+## Architecture at a Glance
+- **Marketing site**: `templates/` + `scripts/build.js` generate `index.html`; CSS lives in `src/css` and shared assets in `public/images`.
+- **React SPA**: `src/react` bootstrapped with Vite; reuses the design tokens and mock data under `src/react/data`.
+- **PHP backend**: `api/` exposes auth, tutor, booking, messaging, and analytics endpoints backed by the schemas in `api/db/*.sql` and `stc2025_schema.sql`.
+- **Realtime + security tooling**: `api/lib/*`, `lib/RealtimeNotifier.php`, and `scripts/securityWebSocket.js` push alerts to admins and mirror chat notifications.
 
-## 🚀 Features
+## Tech Stack
+| Layer | Tools |
+| --- | --- |
+| Frontend build | Vite 5, React 18, vanilla JS modules, custom CSS |
+| Templates | Node 18 build/watch scripts composing partials + sections |
+| Backend | PHP 8.1+, PDO/MySQL, JWT signing, custom security services |
+| Database | MySQL 8 (UTF8MB4, strict schema with audit + messaging tables) |
+| Realtime | Node-based WebSocket bridge + long-poll fallbacks |
 
-- **Dynamic Course Display**: Courses are loaded dynamically using JavaScript
-- **Dual Action Buttons**: Each course card includes both "Manage Attendance" and "Join as Observer" functionality
-- **Responsive Design**: Optimized for desktop and mobile devices
-- **Modern UI**: Clean, professional interface with gradient navigation and hover effects
-- **Accessibility**: Includes ARIA labels for better screen reader support
-
-## 🛠️ Technologies Used
-
-- **HTML5**: Semantic markup structure
-- **CSS3**: 
-  - Flexbox and Grid layouts
-  - CSS gradients and transitions
-  - Responsive design with media queries
-  - Modern card-based UI components
-- **JavaScript (ES6+)**:
-  - Dynamic DOM manipulation
-  - Template literals
-  - Arrow functions
-  - Array methods (forEach)
-
-## 📁 Project Structure
-
+## Repository Layout
 ```
-activity_02/
-├── dashboard.html      # Main HTML structure
-├── style.css          # Styling and responsive design
-├── script.js          # JavaScript functionality
-└── README.md          # Project documentation
-```
-
-## 🎨 Design Features
-
-### Navigation Bar
-- Gradient background (red to pink theme)
-- Responsive navigation that stacks vertically on mobile
-- Hover effects for better user interaction
-
-### Course Cards
-- Grid-based layout that adapts to screen size
-- Hover animations with subtle lift effect
-- Clean typography using Poppins font family
-- Dual-button interface for different user roles
-
-### Responsive Design
-- Mobile-first approach
-- Breakpoint at 600px for mobile optimization
-- Flexible navigation and content layout
-
-## 💻 Sample Data
-
-The dashboard currently displays four sample courses:
-
-1. **Introduction to Web Tech** - Dr. Osafo-Maafo (2 sessions)
-2. **Database Systems** - Prof. Stephane Nwolley (1 session)
-3. **WOC** - Ms. Theodora Aryee (8 sessions)
-4. **Systems Analysis and Design** - Dr. Dennis Owusu (4 sessions)
-
-## 🚀 Getting Started
-
-1. **Clone the repository**:
-   ```bash
-   git clone [repository-url]
-   cd activity_02
-   ```
-
-2. **Open the project**:
-   - Simply open `dashboard.html` in your web browser
-   - No additional setup or dependencies required
-
-3. **For development**:
-   - Use a local server (like Live Server in VS Code) for the best experience
-   - Modify the `courses` array in `script.js` to add/edit course data
-
-## 🔧 Customization
-
-### Adding New Courses
-Edit the `courses` array in `script.js`:
-```javascript
-const courses = [
-  { title: "Your Course Title", instructor: "Instructor Name", sessions: 5 },
-  // Add more courses here
-];
+SmartTutor/
+├── api/                # PHP endpoints, configs, DB schemas, bootstrap scripts
+│   ├── config/         # app.php, database.php read env vars
+│   ├── db/             # schema + security analytics DDL
+│   ├── lib/            # Database, Security, IncidentResponse, realtime helpers
+│   ├── tutor/, admin/  # Role-specific route handlers
+│   ├── scripts/        # init_db.php seeding + utilities
+│   └── *.php           # auth, bookings, tutors, reports, metrics, etc.
+├── lib/                # Frontend PHP helpers (RealtimeNotifier, etc.)
+├── pages/              # Legacy PHP views (admin dashboard, profiles, auth)
+├── public/             # Static assets served by PHP + Vite
+├── scripts/            # Node build/watch/security websocket utilities
+├── src/
+│   ├── css/            # Global styles, dashboards, security theming
+│   ├── js/             # Vanilla landing page interactions
+│   └── react/          # SPA entry, routes, components, mock data
+├── templates/          # Landing page partials + sections consumed by build.js
+├── tools/              # Debug helpers (DB inspectors, hash generator)
+├── package.json
+├── vite.config.js
+└── README.md
 ```
 
-### Styling Modifications
-- Main colors can be changed in the CSS custom properties
-- Grid layout can be adjusted in the `.course-grid` class
-- Responsive breakpoints can be modified in the media queries
+## Prerequisites
+- Node.js 18+ and npm
+- PHP 8.1+ with PDO MySQL extension
+- MySQL 8 (default config assumes port `3307`)
+- Optional: Composer (for adding PHP packages) and a modern browser
 
-## 🎯 Future Enhancements
+## Quick Start
+### 1. Install JavaScript dependencies
+```bash
+npm install
+```
 
-- **Database Integration**: Connect to a real backend API
-- **User Authentication**: Add login/logout functionality
-- **Session Management**: Detailed attendance tracking
-- **Reporting**: Generate attendance reports
-- **Real-time Updates**: Live course data synchronization
+### 2. Build or watch the marketing site
+- One-off build: `npm run build:html`
+- Auto rebuild on template changes: `npm run watch:html`
+- Open `index.html` or serve the repo root to preview the generated page.
 
-## 📱 Browser Compatibility
+### 3. Run the React SPA
+```bash
+npm run dev
+```
+Visit the Vite dev URL (usually `http://localhost:5173`) to explore the SPA prototype. Components pull mock tutors from `src/react/data/tutors.js` and reuse styles from `src/css`.
 
-- Chrome (recommended)
-- Firefox
-- Safari
-- Edge
-- Mobile browsers (iOS Safari, Chrome Mobile)
+### 4. Bring up the PHP API + database
+1. Create a MySQL database (default name `smarttutor`).
+2. Import schemas: `mysql -u root -p smarttutor < api/db/schema.sql` (or run `php api/scripts/init_db.php`).
+3. Configure environment variables (see table below) or edit the arrays in `api/config/database.php` and `api/config/app.php`.
+4. Start a PHP dev server from the project root:
+	```bash
+	php -S 127.0.0.1:8000 -t .
+	```
+5. Hit endpoints such as `POST http://127.0.0.1:8000/api/auth.php?action=login` or `POST /api/bookings.php` with JSON payloads.
 
-## 👥 User Roles
+### 5. (Optional) Realtime/WebSocket bridge
+```bash
+set JWT_SECRET=your-secret
+set REALTIME_BRIDGE_SECRET=bridge-secret
+node scripts/securityWebSocket.js
+```
+The bridge listens for HTTP callbacks from `RealtimeNotifier` and relays security alerts or message previews to authenticated WebSocket clients (admins and subscribed users).
 
-### Faculty Interns
-- Primary users who manage course attendance
-- Can view all assigned courses
-- Access to attendance management tools
+## Environment Variables
+| Variable | Purpose | Default |
+| --- | --- | --- |
+| `DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USER`, `DB_PASS` | Database connectivity for the PHP API | `localhost`, `3307`, `smarttutor`, `root`, empty |
+| `JWT_SECRET` | Signs access tokens; shared with WebSocket server | `change-me-in-env` |
+| `REALTIME_BRIDGE_URL` | HTTP endpoint the API uses to fan out notifications | `http://localhost:8090/notify/messages` |
+| `REALTIME_BRIDGE_SECRET` | Shared secret between API and bridge | `change-bridge-secret` |
+| `WS_URL`, `WS_PORT` | Client/WebSocket server URL + port | `ws://localhost:8080`, `8080` |
 
-### Observers/Auditors
-- Staff and students who want to audit courses
-- Can join courses without management privileges
-- Read-only access to course content
+## npm Scripts
+| Script | Description |
+| --- | --- |
+| `npm run dev` | Start Vite dev server for the SPA prototype |
+| `npm run build` | Production build for the React app |
+| `npm run preview` | Preview the Vite build locally |
+| `npm run build:html` | Generate `index.html` from templates/partials |
+| `npm run watch:html` | Rebuild landing page when templates change |
 
-## 📄 License
+## API Surface (high level)
+- `api/auth.php` – registration, login, refresh tokens, logout, 2FA enable/verify, rate-limited login attempts, lockouts.
+- `api/bookings.php` – booking submission with tutor validation, deduping, and admin notifications.
+- `api/tutors.php` – directory search with filters (`q`, `subject`, `mode`, pagination).
+- `api/metrics.php`, `api/reports.php`, `api/security.php` – aggregates for dashboards, compliance checklists, risk scoring, and security exports.
+- `api/messages.php`, `api/notifications.php` – threaded messaging, admin broadcasts, and notification history endpoints.
 
-This project is part of an educational assignment and is available for learning purposes.
+## Admin & Security Instrumentation
+- Role-gated dashboards (`pages/admin.php`, `pages/notification_history.php`) render live KPIs across bookings, sessions, and security tables using the shared CSS system.
+- `api/lib/Security.php` centralizes password policy, lockouts, checklists, and risk scoring across incidents, compliance, and vulnerabilities.
+- `api/lib/SecurityLogger.php`, `SecurityAudit.php`, and `SecurityAnalytics.php` record structured events for later review.
+- `RealtimeNotifier` + `scripts/securityWebSocket.js` allow incident alerts or message previews to fan out to admins in real time with JWT-authenticated sockets.
+- `tools/debug_*` scripts help inspect database state safely while debugging locally.
 
----
+## Development Notes & Next Steps
+- Replace SVG placeholders under `public/images/` with production-ready photography while keeping filenames identical for instant swaps.
+- Hook the React SPA to live API endpoints, implement role-aware routing, and move mock data into the database.
+- Add automated tests (Jest + React Testing Library, PHPUnit/Pest) and CI linting before shipping to production.
+- Consider wiring Stripe/Paystack for payments and scheduling, plus queuing (Redis/SQS) for high-volume notifications.
 
-**Built with ❤️ for faculty interns**
-
-*Note: This dashboard represents a learning project demonstrating modern web development practices including responsive design, dynamic content generation, and user-centered interface design.*
+## License
+Provided as-is for educational and demonstration purposes.
